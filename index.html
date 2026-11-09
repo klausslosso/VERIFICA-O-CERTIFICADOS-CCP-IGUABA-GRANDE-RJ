@@ -174,16 +174,24 @@
         
         let query = supa.from('certificados').select('*');
         if (isUUID) {
-          query = query.or(`codigo.eq.${codigoLimpo},id.eq.${codigoLimpo}`);
+          query = query.or(`codigo.ilike.${codigoLimpo},id.eq.${codigoLimpo}`);
         } else {
-          query = query.eq('codigo', codigoLimpo);
+          query = query.ilike('codigo', codigoLimpo);
         }
         
         const { data, error } = await query.maybeSingle();
 
         loadingState.classList.add('hidden');
 
-        if (error || !data) {
+        if (error) {
+          console.error("Erro retornado pelo Supabase:", error);
+          errorState.classList.remove('hidden');
+          document.getElementById('errorTitle').textContent = "Erro na Consulta";
+          document.getElementById('errorSubtitle').textContent = `Falha ao consultar o banco de dados: ${error.message || 'Erro desconhecido'}`;
+          return;
+        }
+
+        if (!data) {
           errorState.classList.remove('hidden');
           document.getElementById('errorTitle').textContent = "Registro Não Localizado";
           document.getElementById('errorSubtitle').textContent = `Não encontramos nenhum certificado emitido com o código "${codigoLimpo}".`;
