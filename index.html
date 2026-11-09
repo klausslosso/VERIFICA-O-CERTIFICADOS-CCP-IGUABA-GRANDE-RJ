@@ -17,7 +17,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between p-4 sm:p-6">
 
-  <!-- CABEÇALHO INSTITUCIONAL -->
+  <!-- CABEÇALHO -->
   <header class="max-w-xl w-full mx-auto text-center mb-6 pt-4">
     <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-800 text-lime-300 shadow mb-3">
       <i data-lucide="shield-check" class="w-7 h-7"></i>
@@ -33,7 +33,7 @@
     </p>
   </header>
 
-  <!-- CONTAINER DE VALIDAÇÃO -->
+  <!-- CONTAINER PRINCIPAL -->
   <main class="max-w-xl w-full mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
     
     <!-- BARRA SUPERIOR DO CARD -->
@@ -42,14 +42,14 @@
         <i data-lucide="award" class="w-5 h-5 text-lime-400"></i>
         <span class="font-semibold text-sm">Autenticidade de Documento</span>
       </div>
-      <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+      <span id="headerStatusTag" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
         Verificação Oficial
       </span>
     </div>
 
     <div class="p-6 sm:p-8">
       
-      <!-- ESTADO: CONSULTANDO -->
+      <!-- ESTADO: CARREGANDO -->
       <div id="loadingState" class="py-12 flex flex-col items-center justify-center text-center">
         <div class="w-10 h-10 border-4 border-emerald-200 border-t-emerald-700 rounded-full animate-spin mb-4"></div>
         <h3 class="font-semibold text-slate-700 text-sm">Consultando Base de Dados Oficial...</h3>
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <!-- DADOS OFICIAIS DO CERTIFICADO -->
+        <!-- DADOS DO ALUNO E CURSO -->
         <div class="space-y-4 border border-slate-200 rounded-xl p-4 bg-slate-50/60">
           <div>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Nome do Formando</span>
@@ -86,7 +86,7 @@
               <span id="resCarga" class="text-xs sm:text-sm font-semibold text-slate-800">--</span>
             </div>
             <div>
-              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Período / Conclusão</span>
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Período / Término</span>
               <span id="resPeriodo" class="text-xs sm:text-sm font-semibold text-slate-800">--</span>
             </div>
           </div>
@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      <!-- ESTADO: ERRO OU NÃO LOCALIZADO -->
+      <!-- ESTADO: REVOGADO OU NÃO ENCONTRADO -->
       <div id="errorState" class="hidden space-y-5">
         <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
           <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center flex-shrink-0">
@@ -120,6 +120,7 @@
           </div>
         </div>
 
+        <!-- FORMULÁRIO DE BUSCA MANUAL SE O LINK ESTIVER VAZIO OU COM ERRO -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-3">
           <label class="block font-semibold text-slate-700">Deseja buscar por outro código?</label>
           <div class="flex gap-2">
@@ -167,18 +168,25 @@
 
       try {
         const codigoLimpo = codigo.trim();
-        const { data, error } = await supa
-          .from('certificados')
-          .select('*')
-          .or(`codigo.eq.${codigoLimpo},id.eq.${codigoLimpo}`)
-          .maybeSingle();
+        // Consulta pelo código amigável ou UUID
+        // Identifica se é UUID ou código alfanumérico para evitar erro de tipo no Postgres
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(codigoLimpo);
+        
+        let query = supa.from('certificados').select('*');
+        if (isUUID) {
+          query = query.or(`codigo.eq.${codigoLimpo},id.eq.${codigoLimpo}`);
+        } else {
+          query = query.eq('codigo', codigoLimpo);
+        }
+        
+        const { data, error } = await query.maybeSingle();
 
         loadingState.classList.add('hidden');
 
         if (error || !data) {
           errorState.classList.remove('hidden');
           document.getElementById('errorTitle').textContent = "Registro Não Localizado";
-          document.getElementById('errorSubtitle').textContent = `Não encontramos nenhum certificado emitido sob o código "${codigoLimpo}".`;
+          document.getElementById('errorSubtitle').textContent = `Não encontramos nenhum certificado emitido com o código "${codigoLimpo}".`;
           return;
         }
 
@@ -189,6 +197,7 @@
           return;
         }
 
+        // Preenche dados válidos
         document.getElementById('resAluno').textContent = data.nome_aluno;
         document.getElementById('resCurso').textContent = data.curso;
         document.getElementById('resCarga').textContent = `${data.carga_horaria} horas (${data.horas_extenso || ''})`;
@@ -204,7 +213,7 @@
         loadingState.classList.add('hidden');
         errorState.classList.remove('hidden');
         document.getElementById('errorTitle').textContent = "Falha de Conexão";
-        document.getElementById('errorSubtitle').textContent = "Não foi possível conectar ao servidor de validação.";
+        document.getElementById('errorSubtitle').textContent = "Ocorreu um erro ao consultar o servidor. Verifique sua conexão e tente novamente.";
       }
     }
 
