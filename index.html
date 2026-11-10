@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="web_standard" name="shell-type">
+  <title>Autenticidade de Certificados - CCP Iguaba Grande</title>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Supabase JS Client v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- HTML5 QR Code Scanner Library (Câmera Real) -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#aed376",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#cce5ff",
+            "surface-tint": "#2a6a47",
+            "surface": "#f5faff",
+            "on-primary-fixed": "#002110",
+            "primary": "#004025",
+            "inverse-on-surface": "#e5f3fd",
+            "surface-variant": "#d7e4ef",
+            "on-tertiary-fixed-variant": "#004b73",
+            "civic-gold": "#D97706",
+            "surface-container-highest": "#d7e4ef",
+            "on-primary-fixed-variant": "#0a5131",
+            "on-background": "#101d25",
+            "on-error": "#ffffff",
+            "outline-variant": "#bfc9c0",
+            "background": "#f5faff",
+            "secondary": "#496717",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#404942",
+            "primary-container": "#165938",
+            "outline": "#707971",
+            "on-secondary-fixed": "#121f00",
+            "on-secondary-container": "#4d6c1c",
+            "surface-container-high": "#dceaf5",
+            "tertiary-container": "#00527e",
+            "secondary-container": "#c6ec8d",
+            "on-surface": "#101d25",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#c9ef8f",
+            "surface-bright": "#f5faff",
+            "tertiary": "#003a5b",
+            "primary-fixed-dim": "#93d5aa",
+            "on-secondary-fixed-variant": "#324f00",
+            "error": "#ba1a1a",
+            "gov-dark": "#0B4627",
+            "on-tertiary-container": "#82c6ff",
+            "error-container": "#ffdad6",
+            "primary-fixed": "#aef1c5",
+            "surface-container-low": "#e9f5ff",
+            "inverse-primary": "#93d5aa",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#8ccea4",
+            "tertiary-fixed-dim": "#93ccff",
+            "surface-container": "#e2f0fa",
+            "on-tertiary-fixed": "#001d31",
+            "inverse-surface": "#25323a",
+            "surface-pearl": "#F8FAFC",
+            "surface-dim": "#cedce6"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* Otimizações de Impressão */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print, header, footer, #search-console, #trust-pillars, #atendimento-duvidas, #qr-camera-drawer, .ambient-mesh {
+        display: none !important;
+      }
+      #status-success {
+        display: block !important;
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        page-break-inside: avoid !important;
+      }
+      .action-bar-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary-fixed selection:text-primary">
+
+  <main class="w-full bg-surface pt-6 sm:pt-8 flex-1">
+    <div class="flex flex-col w-full">
+
+      <!-- Ambient Glow Effect -->
+      <div class="ambient-mesh relative w-full overflow-hidden pb-8 sm:pb-12">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[1100px] h-[480px] bg-gradient-to-b from-primary-fixed/25 via-surface-container/30 to-transparent blur-3xl pointer-events-none -z-10"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          
+          <!-- Cabeçalho Institucional -->
+          <header class="flex flex-col items-center text-center mb-8">
+            <div class="w-full max-w-2xl px-4 py-2 mb-4 flex justify-center">
+              <img src="LOGO%20SECDETER.png" alt="Logotipo Oficial SDETR - Prefeitura de Iguaba Grande" class="max-h-16 md:max-h-20 w-auto object-contain drop-shadow-sm">
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-high/70 border border-slate-200 shadow-sm mb-4">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+              <span class="text-xs text-primary font-bold uppercase tracking-wider">Centro de Capacitação Profissional • CCP</span>
+              <span class="text-outline-variant text-xs">•</span>
+              <span class="text-xs text-on-surface-variant flex items-center gap-1 font-medium">
+                <span class="material-symbols-outlined text-[15px] text-civic-gold">verified</span> Base Oficial SDETR
+              </span>
+            </div>
+
+            <h1 class="text-2xl sm:text-3xl md:text-4xl text-primary max-w-3xl font-extrabold tracking-tight">
+              Autenticidade de Certificados Oficiais
+            </h1>
+
+            <p class="mt-3 text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
+              Consulte instantaneamente a legitimidade, amparo legal e veracidade jurídica de títulos emitidos pelo Centro de Capacitação Profissional de Iguaba Grande.
+            </p>
+
+            <!-- Pílulas de Garantia -->
+            <div class="mt-6 flex flex-wrap justify-center items-center gap-2.5 text-xs">
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-lowest border border-slate-200/80 shadow-sm text-on-surface-variant font-medium">
+                <span class="material-symbols-outlined text-[16px] text-primary">security</span>
+                <span>Conexão Segura &amp; Criptografada</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-lowest border border-slate-200/80 shadow-sm text-on-surface-variant font-medium">
+                <span class="material-symbols-outlined text-[16px] text-secondary">database</span>
+                <span>Homologação SDETR</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-lowest border border-slate-200/80 shadow-sm text-on-surface-variant font-medium">
+                <span class="material-symbols-outlined text-[16px] text-civic-gold">gavel</span>
+                <span>Lei Federal nº 9.394/96 (LDB)</span>
+              </div>
+            </div>
+          </header>
+
+          <!-- Console de Busca e Scanner -->
+          <section id="search-console" class="max-w-3xl mx-auto w-full mb-10">
+            <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-5 shadow-xl border border-slate-200/80">
+              <form id="search-form" onsubmit="event.preventDefault(); executarBusca();" class="flex flex-col sm:flex-row gap-3 items-stretch">
+                <div class="relative flex-1">
+                  <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="material-symbols-outlined text-[20px]">badge</span>
+                  </div>
+                  <input 
+                    id="cert-input" 
+                    type="text" 
+                    placeholder="Informe o Código (ex: CCP-2026-0000)" 
+                    class="w-full pl-10 pr-10 py-3.5 bg-surface-pearl rounded-xl text-sm sm:text-base text-on-surface placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all uppercase tracking-wider font-mono font-medium"
+                    autocomplete="off"
+                    spellcheck="false"
+                  >
+                  <button 
+                    type="button" 
+                    id="clear-input-btn" 
+                    onclick="limparBusca()" 
+                    title="Limpar campo" 
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 transition-colors"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">cancel</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    id="scan-qr-btn" 
+                    onclick="toggleQRScanner()" 
+                    title="Ler QR Code com a câmera do celular ou webcam" 
+                    class="px-4 py-3.5 rounded-xl bg-surface-container-high hover:bg-surface-variant text-primary font-semibold text-sm flex items-center justify-center gap-2 transition-all border border-slate-200 active:scale-95"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+                    <span class="hidden md:inline">Escanear QR</span>
+                  </button>
+
+                  <button 
+                    type="submit" 
+                    id="search-btn" 
+                    class="flex-1 sm:flex-initial px-6 py-3.5 rounded-xl bg-primary hover:bg-gov-dark text-on-primary font-semibold text-sm shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                    <span>Verificar Certificado</span>
+                  </button>
+                </div>
+              </form>
+
+              <!-- Exemplo de Formato e Dica -->
+              <div class="mt-3.5 pt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-on-surface-variant border-t border-slate-100">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-slate-400">Exemplo de formato:</span>
+                  <span class="font-mono font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-xs">CCP-2026-0000</span>
+                </div>
+                <div class="flex items-center gap-1 text-slate-400">
+                  <span class="material-symbols-outlined text-[15px]">info</span>
+                  <span>Código disponível no verso e rodapé da via impressa.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drawer do Leitor de QR Code (Câmera Real + Simulação) -->
+            <div id="qr-camera-drawer" class="hidden mt-4 bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-lg border border-slate-200 transition-all">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-[22px]">photo_camera</span>
+                  <span class="text-sm sm:text-base text-on-surface font-bold">Leitor de QR Code do Certificado</span>
+                </div>
+                <button type="button" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" onclick="toggleQRScanner()">
+                  <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+              </div>
+
+              <div class="w-full bg-slate-900 rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center text-center text-white relative overflow-hidden">
+                <!-- Área do scanner HTML5 -->
+                <div id="qr-reader" class="w-full max-w-sm rounded-lg overflow-hidden"></div>
+                
+                <p id="qr-status-msg" class="text-xs text-slate-300 mt-3 max-w-sm">
+                  Aponte a câmera para o QR Code localizado no canto inferior do certificado.
+                </p>
+
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                  <button 
+                    type="button" 
+                    class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-500 transition flex items-center gap-1.5 shadow" 
+                    onclick="simularLeitura('CCP-2026-0010')"
+                  >
+                    <span class="material-symbols-outlined text-[16px]">play_circle</span>
+                    Simular Leitura Instantânea (Teste)
+                  </button>
+                  <button 
+                    type="button" 
+                    class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition" 
+                    onclick="pararScanner()"
+                  >
+                    Desativar Câmera
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Containers de Resposta (Status) -->
+          <section class="max-w-4xl mx-auto w-full space-y-8">
+
+            <!-- ESTADO INICIAL (Aguardando Consulta) -->
+            <div id="status-initial" class="bg-surface-container-lowest rounded-2xl p-8 sm:p-10 shadow-md border border-slate-200/80 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 text-primary mb-4">
+                <span class="material-symbols-outlined text-[36px]">manage_search</span>
+              </div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">Portal Oficial de Verificação</h2>
+              <p class="text-sm text-slate-600 mt-2 max-w-md mx-auto leading-relaxed">
+                Digite acima o código do certificado impresso ou utilize o leitor de QR Code para conferir a autenticidade e validade jurídica do documento.
+              </p>
+            </div>
+
+            <!-- ESTADO CARREGANDO -->
+            <div id="status-loading" class="hidden bg-surface-container-lowest rounded-2xl p-10 sm:p-12 shadow-lg border border-slate-200 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-50 text-primary mb-4">
+                <span class="material-symbols-outlined text-primary text-[36px] animate-spin">sync</span>
+              </div>
+              <h2 class="text-lg sm:text-xl text-primary font-bold">Consultando Base de Dados Oficial...</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1.5">
+                Conectando aos registros autenticados do Centro de Capacitação Profissional de Iguaba Grande.
+              </p>
+            </div>
+
+            <!-- ESTADO ERRO (Não Encontrado ou Revogado) -->
+            <div id="status-error" class="hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-xl border border-red-200">
+              <div class="p-6 rounded-xl bg-red-50/80 border border-red-100 flex flex-col md:flex-row items-start md:items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                  <span class="material-symbols-outlined text-[32px]">warning</span>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span id="error-title" class="text-lg sm:text-xl text-red-950 font-bold">Certificado Não Localizado</span>
+                    <span id="error-badge" class="px-2.5 py-0.5 rounded-full bg-red-200 text-red-900 text-xs font-bold uppercase tracking-wide">Código Inexistente</span>
+                  </div>
+                  <p id="error-desc" class="text-sm text-red-900/90 mt-1 leading-relaxed">
+                    Não encontramos nenhum certificado emitido com o código <span class="font-bold text-slate-900 font-mono" id="error-code-label">"---"</span> na base pública da SDETR.
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-3">
+                    <button type="button" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-xs font-semibold shadow hover:bg-gov-dark transition-all" onclick="limparBusca()">
+                      Tentar Outro Código
+                    </button>
+                    <a href="#atendimento-duvidas" class="px-4 py-2 bg-white text-primary border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition-all flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">contact_support</span>
+                      Solicitar Atendimento ao Aluno
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ESTADO SUCESSO: CARD OFICIAL COMPLETO -->
+            <div id="status-success" class="hidden bg-surface-container-lowest rounded-2xl shadow-2xl border border-slate-200/90 overflow-hidden">
+              
+              <!-- Faixa Superior de Autenticidade -->
+              <div class="bg-gov-dark text-on-primary px-6 md:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-950">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-inner shrink-0">
+                    <span class="material-symbols-outlined text-[28px] material-symbols-fill text-emerald-950">verified_user</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-base sm:text-lg text-white font-bold tracking-tight">Certificado Válido e Autêntico</span>
+                      <span id="cert-status-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">Regular</span>
+                    </div>
+                    <p class="text-xs text-primary-fixed-dim mt-0.5">
+                      Documento emitido regularmente pelo Centro de Capacitação Profissional de Iguaba Grande.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conteúdo Estruturado da Credencial -->
+              <div class="p-6 md:p-8 space-y-6 sm:space-y-8">
+                
+                <!-- Bloco Principal do Aluno e Curso -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-6 border-b border-slate-100">
+                  <div class="lg:col-span-7 flex flex-col justify-between">
+                    <div>
+                      <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nome do Formando</span>
+                      <div id="res-aluno" class="text-xl sm:text-2xl md:text-3xl text-primary font-extrabold tracking-tight capitalize">
+                        --
+                      </div>
+                      <div class="mt-1.5 flex items-center gap-2 text-slate-600 text-xs font-medium">
+                        <span id="res-doc">Registro Oficial Homologado • SDETR</span>
+                        <span>•</span>
+                        <span class="text-emerald-700 font-bold flex items-center gap-1">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Apto e Certificado
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                      <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Curso de Qualificação Profissional</span>
+                      <div class="text-lg sm:text-xl text-slate-900 font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary text-[24px]">school</span>
+                        <span id="res-curso" class="uppercase text-emerald-950">--</span>
+                      </div>
+                      <p id="res-ementa" class="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Qualificação profissional com ênfase prática em técnicas contemporâneas, normas de segurança e diretrizes pedagógicas do CCP.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Painel Lateral Visual (Chancela e Carga Horária) -->
+                  <div class="lg:col-span-5 bg-surface-container-low rounded-2xl p-5 flex flex-col justify-between border border-slate-200/70">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200/50">
+                      <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">assignment_turned_in</span>
+                        <span class="text-xs sm:text-sm text-primary font-bold">Chancela Digital</span>
+                      </div>
+                    </div>
+
+                    <!-- Gráfico Circular de Frequência -->
+                    <div class="my-3 flex items-center gap-4 bg-white p-3.5 rounded-xl shadow-sm border border-slate-100">
+                      <div class="relative w-14 h-14 shrink-0">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                          <path class="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+                          <path class="text-emerald-600" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-linecap="round" stroke-width="3.5"></path>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary">100%</div>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-[11px] text-slate-400 font-semibold uppercase">Carga Horária</span>
+                        <span id="res-carga" class="text-sm sm:text-base text-slate-900 font-bold">-- Horas</span>
+                        <span id="res-carga-extenso" class="text-xs text-slate-500 capitalize">--</span>
+                      </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between text-slate-600 text-xs">
+                      <span>Ano: <strong id="res-ano">2026</strong></span>
+                      <span>Modalidade: <strong>Presencial</strong></span>
+                      <span>Aproveitamento: <strong class="text-emerald-700">Pleno</strong></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Grade de Metadados Cartorários -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                  <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Período Letivo</span>
+                    <span id="res-periodo" class="text-xs sm:text-sm text-slate-800 font-bold flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[16px] text-primary">date_range</span>
+                      --
+                    </span>
+                    <span class="text-[11px] text-slate-500 mt-1 block">Concluído Regularmente</span>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Instrutor(a) Responsável</span>
+                    <span id="res-instrutor" class="text-xs sm:text-sm text-slate-800 font-bold truncate block" title="Instrutor">
+                      --
+                    </span>
+                    <span class="text-[11px] text-slate-500 mt-1 block">Corpo Docente CCP</span>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Data de Conclusão</span>
+                    <span id="res-emissao" class="text-xs sm:text-sm text-slate-800 font-bold flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[16px] text-secondary">event_available</span>
+                      --
+                    </span>
+                    <span class="text-[11px] text-slate-500 mt-1 block">Iguaba Grande - RJ</span>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60 flex flex-col justify-between">
+                    <div>
+                      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Código de Registro</span>
+                      <div class="flex items-center justify-between">
+                        <span id="registered-code-display" class="text-xs sm:text-sm text-primary font-mono font-bold">--</span>
+                        <button type="button" class="text-slate-400 hover:text-primary transition-colors p-1" onclick="copyCurrentCode()" title="Copiar código">
+                          <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Barra de Ações: Baixar PDF, Imprimir, Compartilhar -->
+                <div class="action-bar-print pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-gov-dark text-on-primary text-xs sm:text-sm font-semibold flex items-center gap-2 shadow hover:shadow-md transition-all active:scale-95" onclick="triggerPrint()">
+                      <span class="material-symbols-outlined text-[18px]">download</span>
+                      <span>Baixar Comprovante Oficial (PDF)</span>
+                    </button>
+
+                    <button type="button" class="px-4 py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-variant text-primary text-xs sm:text-sm font-semibold flex items-center gap-2 transition-colors border border-slate-200" onclick="triggerPrint()">
+                      <span class="material-symbols-outlined text-[18px]">print</span>
+                      <span>Imprimir Registro</span>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center gap-3 relative">
+                    <button type="button" class="px-3.5 py-2 rounded-xl text-slate-600 hover:text-primary hover:bg-slate-100 transition-colors text-xs font-semibold flex items-center gap-1.5 border border-slate-200" onclick="shareVerificationLink()">
+                      <span class="material-symbols-outlined text-[16px]">share</span>
+                      <span>Compartilhar Link</span>
+                    </button>
+
+                    <div id="copy-toast" class="hidden absolute -top-8 right-0 px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-medium shadow-lg animate-fade">
+                      Copiado!
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Rodapé Legal Interno do Card -->
+              <div class="bg-surface-pearl px-6 md:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-center gap-3 text-slate-500 text-xs border-t border-slate-200/70 text-center">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-civic-gold text-[18px]">gavel</span>
+                  <span><strong>Amparo Legal:</strong> Lei nº 9.394/96 (LDB) e Decreto Federal nº 5.154/04. Válido em todo o território nacional.</span>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- Pilares de Confiança e Fé Pública (3 Colunas) -->
+          <section id="trust-pillars" class="max-w-5xl mx-auto w-full mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200/80">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[24px]">verified</span>
+              </div>
+              <h3 class="text-base text-primary font-bold mb-2">Fé Pública Municipal</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                A autenticação eletrônica confere total segurança jurídica a empresas, órgãos licitantes e instituições de ensino que necessitam comprovar a idoneidade do certificado do formando.
+              </p>
+            </div>
+
+            <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200/80">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[24px]">lock_reset</span>
+              </div>
+              <h3 class="text-base text-primary font-bold mb-2">Imutabilidade de Registros</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Todos os formandos do Centro de Capacitação Profissional (CCP) possuem registro indexado em livro cartorário administrativo e base digital descentralizada à prova de fraudes.
+              </p>
+            </div>
+
+            <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200/80">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[24px]">policy</span>
+              </div>
+              <h3 class="text-base text-primary font-bold mb-2">Conformidade Legal</h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Cursos livres e profissionalizantes amparados pela Lei de Diretrizes e Bases da Educação Nacional nº 9.394/1996 e deliberações do Conselho Municipal de Trabalho e Renda de Iguaba Grande.
+              </p>
+            </div>
+          </section>
+
+          <!-- Canal de Suporte e Dúvidas -->
+          <section id="atendimento-duvidas" class="max-w-4xl mx-auto w-full mt-12 bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-md">
+                  <span class="material-symbols-outlined text-[26px]">support_agent</span>
+                </div>
+                <div>
+                  <h3 class="text-base sm:text-lg text-primary font-bold">Precisa de auxílio com uma certificação?</h3>
+                  <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl leading-relaxed">
+                    Se você possui um certificado anterior ao ano vigente ou caso haja divergência nos caracteres alfanuméricos, procure nossa equipe de apoio educacional e regulatório.
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-4 text-xs text-slate-600">
+                    <span class="flex items-center gap-1.5 font-medium text-slate-800">
+                      <span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                      ccp@iguaba.rj.gov.br
+                    </span>
+                    <span class="flex items-center gap-1.5 font-medium text-slate-800">
+                      <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+                      Rua Nilo Lopes Pessoa, nº 126, Centro • Iguaba Grande/RJ
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      08h às 17h (dias úteis)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <a href="mailto:ccp@iguaba.rj.gov.br?subject=Duvida%20de%20Autenticidade%20de%20Certificado" class="px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-primary text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all shrink-0 flex items-center gap-2 border border-slate-200">
+                <span>Falar com o CCP</span>
+                <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Rodapé Institucional Simplificado -->
+  <footer class="w-full bg-surface-container-low border-t border-slate-200/80 mt-12 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">
+      <p>© 2026 Centro de Capacitação Profissional de Iguaba Grande &bull; Sistema Oficial de Validação de Certificados</p>
+    </div>
+  </footer>
+
+  <!-- Script Lógico Completo -->
+  <script>
+    // Inicialização do cliente Supabase Oficial
+    const SUPABASE_URL = 'https://qdmityjaqwvcesejsexh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkbWl0eWphcXd2Y2VzZWpzZXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2ODU4NzAsImV4cCI6MjA5NDI2MTg3MH0.cqmB5B-lTaC1TaQwXuOlWjKjlnTufaGq6ndlm3K1uvI';
+    const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let html5QrScanner = null;
+
+    // Utilitário para formatar datas amigáveis
+    function formatarDataPorExtenso(dataStr) {
+      if (!dataStr) return '--';
+      // Se já vier formatado como DD/MM/AAAA
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataStr)) {
+        const [dia, mes, ano] = dataStr.split('/');
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const mesNome = meses[parseInt(mes, 10) - 1] || mes;
+        return `${dia} de ${mesNome} de ${ano}`;
+      }
+      // Se vier em ISO
+      const d = new Date(dataStr);
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+      }
+      return dataStr;
+    }
+
+    // Consulta e Validação Oficial no Supabase
+    async function validarDocumento(codigo) {
+      const input = document.getElementById('cert-input');
+      const statusInitial = document.getElementById('status-initial');
+      const statusLoading = document.getElementById('status-loading');
+      const statusSuccess = document.getElementById('status-success');
+      const statusError = document.getElementById('status-error');
+      const errorCodeLabel = document.getElementById('error-code-label');
+      const errorTitle = document.getElementById('error-title');
+      const errorBadge = document.getElementById('error-badge');
+      const errorDesc = document.getElementById('error-desc');
+
+      const codigoLimpo = (codigo || '').trim().toUpperCase();
+
+      if (!codigoLimpo) {
+        statusLoading.classList.add('hidden');
+        statusSuccess.classList.add('hidden');
+        statusError.classList.add('hidden');
+        statusInitial.classList.remove('hidden');
+        return;
+      }
+
+      input.value = codigoLimpo;
+
+      // Exibe estado de carregamento
+      statusInitial.classList.add('hidden');
+      statusSuccess.classList.add('hidden');
+      statusError.classList.add('hidden');
+      statusLoading.classList.remove('hidden');
+
+      // Atualiza URL sem recarregar a página
+      const novaUrl = `${window.location.pathname}?codigo=${encodeURIComponent(codigoLimpo)}`;
+      window.history.pushState({ path: novaUrl }, '', novaUrl);
+
+      try {
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(codigoLimpo);
+        
+        let query = supa.from('certificados').select('*');
+        if (isUUID) {
+          query = query.or(`codigo.ilike.${codigoLimpo},id.eq.${codigoLimpo}`);
+        } else {
+          query = query.ilike('codigo', codigoLimpo);
+        }
+
+        const { data, error } = await query.maybeSingle();
+
+        statusLoading.classList.add('hidden');
+
+        if (error) {
+          console.error("Erro retornado pelo Supabase:", error);
+          errorTitle.textContent = "Falha na Consulta";
+          errorBadge.textContent = "Erro Servidor";
+          errorCodeLabel.textContent = `"${codigoLimpo}"`;
+          errorDesc.textContent = `Ocorreu um erro ao consultar os servidores: ${error.message || 'Erro de conexão'}.`;
+          statusError.classList.remove('hidden');
+          statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+
+        if (!data) {
+          errorTitle.textContent = "Certificado Não Localizado";
+          errorBadge.textContent = "Código Inexistente";
+          errorCodeLabel.textContent = `"${codigoLimpo}"`;
+          errorDesc.textContent = `Não encontramos nenhum certificado emitido com o código "${codigoLimpo}" na base de dados oficial da SDETR.`;
+          statusError.classList.remove('hidden');
+          statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+
+        // Verifica se o certificado foi revogado
+        if (data.status === 'revogado') {
+          errorTitle.textContent = "Certificado Revogado";
+          errorBadge.textContent = "Cancelado";
+          errorCodeLabel.textContent = `"${codigoLimpo}"`;
+          errorDesc.textContent = "Este certificado foi formalmente revogado ou cancelado administrativamente pela coordenação do CCP.";
+          statusError.classList.remove('hidden');
+          statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+
+        // Preenche com sucesso os dados do formando
+        document.getElementById('res-aluno').textContent = data.nome_aluno || 'NÃO INFORMADO';
+        document.getElementById('res-curso').textContent = data.curso || 'CURSO LIVRE';
+        
+        const cargaNum = data.carga_horaria || '--';
+        document.getElementById('res-carga').textContent = `${cargaNum} Horas`;
+        document.getElementById('res-carga-extenso').textContent = data.horas_extenso ? `(${data.horas_extenso})` : 'Aproveitamento Homologado';
+
+        document.getElementById('res-periodo').textContent = data.periodo || data.data_conclusao || 'Concluído Regularmente';
+        document.getElementById('res-instrutor').textContent = data.instrutor || 'Coordenação Docente CCP';
+        
+        const dataFormatada = formatarDataPorExtenso(data.data_conclusao || data.created_at);
+        document.getElementById('res-emissao').textContent = dataFormatada;
+        
+        document.getElementById('registered-code-display').textContent = data.codigo || codigoLimpo;
+
+        // Ano de conclusão
+        let anoLetivo = '2026';
+        if (data.periodo && data.periodo.match(/\b(202\d)\b/)) {
+          anoLetivo = data.periodo.match(/\b(202\d)\b/)[0];
+        } else if (data.data_conclusao && data.data_conclusao.match(/\b(202\d)\b/)) {
+          anoLetivo = data.data_conclusao.match(/\b(202\d)\b/)[0];
+        }
+        document.getElementById('res-ano').textContent = anoLetivo;
+
+        statusSuccess.classList.remove('hidden');
+        statusSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      } catch (err) {
+        console.error("Erro geral na validação:", err);
+        statusLoading.classList.add('hidden');
+        errorTitle.textContent = "Falha de Conexão";
+        errorBadge.textContent = "Offline";
+        errorCodeLabel.textContent = `"${codigoLimpo}"`;
+        errorDesc.textContent = "Não foi possível conectar à base de dados. Verifique sua conexão com a internet e tente novamente.";
+        statusError.classList.remove('hidden');
+      }
+    }
+
+    function executarBusca() {
+      const code = document.getElementById('cert-input').value;
+      validarDocumento(code);
+    }
+
+    function limparBusca() {
+      const input = document.getElementById('cert-input');
+      input.value = '';
+      input.focus();
+      validarDocumento('');
+    }
+
+    function setSampleCode(code) {
+      document.getElementById('cert-input').value = code;
+      validarDocumento(code);
+    }
+
+    function copyCurrentCode() {
+      const code = document.getElementById('registered-code-display').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        mostrarToast('Código copiado!');
+      });
+    }
+
+    function shareVerificationLink() {
+      const currentUrl = window.location.href;
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        mostrarToast('Link de validação copiado!');
+      });
+    }
+
+    function mostrarToast(mensagem) {
+      const toast = document.getElementById('copy-toast');
+      toast.textContent = mensagem;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    function triggerPrint() {
+      window.print();
+    }
+
+    // Leitor de QR Code usando a Câmera Real do Dispositivo
+    function toggleQRScanner() {
+      const drawer = document.getElementById('qr-camera-drawer');
+      const isHidden = drawer.classList.contains('hidden');
+
+      if (isHidden) {
+        drawer.classList.remove('hidden');
+        iniciarScanner();
+      } else {
+        pararScanner();
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function iniciarScanner() {
+      const statusMsg = document.getElementById('qr-status-msg');
+      if (typeof Html5Qrcode === 'undefined') {
+        statusMsg.textContent = "Módulo de câmera indisponível neste navegador. Use a simulação ou informe o código.";
+        return;
+      }
+
+      if (!html5QrScanner) {
+        html5QrScanner = new Html5Qrcode("qr-reader");
+      }
+
+      const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          // Extrai parâmetro de código se for uma URL completa
+          let codEncontrado = decodedText;
+          try {
+            if (decodedText.includes('?')) {
+              const url = new URL(decodedText);
+              codEncontrado = url.searchParams.get('codigo') || url.searchParams.get('cod') || url.searchParams.get('id') || decodedText;
+            }
+          } catch(e) {}
+
+          pararScanner();
+          document.getElementById('qr-camera-drawer').classList.add('hidden');
+          validarDocumento(codEncontrado);
+        },
+        (error) => {
+          // Erro de leitura por frame, não precisa interromper
+        }
+      ).catch((err) => {
+        console.warn("Permissão de câmera não concedida ou dispositivo sem câmera:", err);
+        statusMsg.textContent = "Não foi possível acessar a câmera. Verifique as permissões ou teste pelo botão abaixo.";
+      });
+    }
+
+    function pararScanner() {
+      if (html5QrScanner && html5QrScanner.isScanning) {
+        html5QrScanner.stop().catch(console.error);
+      }
+    }
+
+    function simularLeitura(code) {
+      pararScanner();
+      document.getElementById('qr-camera-drawer').classList.add('hidden');
+      validarDocumento(code);
+    }
+
+    // Executa ao carregar a página (lê parâmetros de URL do QR Code)
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const codigoParam = params.get('codigo') || params.get('cod') || params.get('id');
+      
+      if (codigoParam) {
+        validarDocumento(codigoParam);
+      } else {
+        validarDocumento('');
+      }
+    });
+  </script>
+</body>
+</html>
