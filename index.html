@@ -996,17 +996,19 @@
       const statusLoading = document.getElementById('status-loading');
       const statusSuccess = document.getElementById('status-success');
       const statusError = document.getElementById('status-error');
-      const errorCodeLabel = document.getElementById('error-code-label');
       const errorTitle = document.getElementById('error-title');
       const errorBadge = document.getElementById('error-badge');
       const errorDesc = document.getElementById('error-desc');
 
-      const codigoLimpo = (codigo || '').trim().toUpperCase();
+      // Sanitização defensiva: remove operadores de filtro PostgREST (, ; ( ) < >) e caracteres de controle
+      const rawCodigo = (codigo || '').trim();
+      const codigoLimpo = rawCodigo.replace(/[^a-zA-Z0-9\-_./ ]/g, '').toUpperCase();
 
       if (!codigoLimpo) {
         statusLoading.classList.add('hidden');
         statusSuccess.classList.add('hidden');
         statusError.classList.add('hidden');
+        document.getElementById('solicitacao-formulario').classList.add('hidden');
         statusInitial.classList.remove('hidden');
         return;
       }
@@ -1043,8 +1045,7 @@
           errorTitle.textContent = "Falha na Consulta";
           errorBadge.textContent = "Erro Servidor";
           document.getElementById('error-code-badge').textContent = codigoLimpo;
-          document.getElementById('error-code-highlight').textContent = codigoLimpo;
-          errorDesc.innerHTML = `Ocorreu um erro ao consultar os servidores: ${error.message || 'Erro de conexão'}.`;
+          errorDesc.textContent = `Ocorreu um erro ao consultar os servidores: ${error.message || 'Erro de conexão'}.`;
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
@@ -1054,8 +1055,11 @@
           errorTitle.textContent = "Registro Não Localizado no Sistema Oficial";
           errorBadge.textContent = "Não Encontrado";
           document.getElementById('error-code-badge').textContent = codigoLimpo;
+          
+          // Uso seguro de textContent para prevenir injeção XSS
+          errorDesc.innerHTML = 'O código informado <strong id="error-code-highlight" class="text-red-700 font-mono font-bold"></strong> não consta na base pública digital de certificados do <strong>Centro de Capacitação Profissional (CCP)</strong> ou ainda não concluiu todas as etapas regimentais de homologação eletrônica.';
           document.getElementById('error-code-highlight').textContent = codigoLimpo;
-          errorDesc.innerHTML = `O código informado <strong class="text-red-700 font-mono font-bold">${codigoLimpo}</strong> não consta na base pública digital de certificados do <strong>Centro de Capacitação Profissional (CCP)</strong> ou ainda não concluiu todas as etapas regimentais de homologação eletrônica.`;
+          
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
@@ -1066,8 +1070,9 @@
           errorTitle.textContent = "Certificado Revogado";
           errorBadge.textContent = "Cancelado";
           document.getElementById('error-code-badge').textContent = codigoLimpo;
+          
+          errorDesc.innerHTML = 'O certificado correspondente ao código <strong id="error-code-highlight" class="text-red-700 font-mono font-bold"></strong> foi formalmente cancelado ou anulado administrativamente pela coordenação do CCP.';
           document.getElementById('error-code-highlight').textContent = codigoLimpo;
-          errorDesc.innerHTML = `O certificado correspondente ao código <strong class="text-red-700 font-mono font-bold">${codigoLimpo}</strong> foi formalmente cancelado ou anulado administrativamente pela coordenação do CCP.`;
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
@@ -1308,14 +1313,4 @@
     // Executa ao carregar a página (lê parâmetros de URL do QR Code)
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
-      const codigoParam = params.get('codigo') || params.get('cod') || params.get('id');
-      
-      if (codigoParam) {
-        validarDocumento(codigoParam);
-      } else {
-        validarDocumento('');
-      }
-    });
-  </script>
-</body>
-</html>
+      const codigoPara
