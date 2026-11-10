@@ -103,7 +103,7 @@
         background: #ffffff !important;
         color: #000000 !important;
       }
-      .no-print, header, footer, #search-console, #trust-pillars, #atendimento-duvidas, #qr-camera-drawer, .ambient-mesh {
+      .no-print, header, footer, #search-console, #trust-pillars, #atendimento-duvidas, #qr-camera-drawer, #section-como-localizar, #solicitacao-formulario, #protocolo-modal, .ambient-mesh {
         display: none !important;
       }
       #status-success {
@@ -300,29 +300,296 @@
               </p>
             </div>
 
-            <!-- ESTADO ERRO (Não Encontrado ou Revogado) -->
-            <div id="status-error" class="hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-xl border border-red-200">
-              <div class="p-6 rounded-xl bg-red-50/80 border border-red-100 flex flex-col md:flex-row items-start md:items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-md">
-                  <span class="material-symbols-outlined text-[32px]">warning</span>
+            <!-- ESTADO ERRO (Não Encontrado ou Revogado - Painel Robusto do Stitch) -->
+            <div id="status-error" class="hidden bg-surface-container-lowest rounded-2xl shadow-xl border border-red-200 overflow-hidden">
+              
+              <!-- Faixa Superior de Alerta -->
+              <div class="bg-red-950 text-white px-6 md:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-red-900">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-2xl bg-red-800 text-white flex items-center justify-center shadow-inner shrink-0">
+                    <span class="material-symbols-outlined text-[28px]">search_off</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span id="error-title" class="text-base sm:text-lg text-white font-bold tracking-tight">Registro Não Localizado no Sistema Oficial</span>
+                      <span id="error-badge" class="px-2.5 py-0.5 rounded-full bg-red-700 text-white text-xs font-bold uppercase tracking-wide">Não Encontrado</span>
+                    </div>
+                    <p class="text-xs text-red-200 mt-0.5">
+                      Base de Dados Digital do Centro de Capacitação Profissional de Iguaba Grande
+                    </p>
+                  </div>
                 </div>
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span id="error-title" class="text-lg sm:text-xl text-red-950 font-bold">Certificado Não Localizado</span>
-                    <span id="error-badge" class="px-2.5 py-0.5 rounded-full bg-red-200 text-red-900 text-xs font-bold uppercase tracking-wide">Código Inexistente</span>
-                  </div>
-                  <p id="error-desc" class="text-sm text-red-900/90 mt-1 leading-relaxed">
-                    Não encontramos nenhum certificado emitido com o código <span class="font-bold text-slate-900 font-mono" id="error-code-label">"---"</span> na base pública da SDETR.
+
+                <div class="flex items-center gap-2 self-start sm:self-center">
+                  <span class="text-xs text-red-200">Código Consultado:</span>
+                  <code id="error-code-badge" class="px-2.5 py-1 bg-white/10 rounded-lg text-xs text-white font-mono font-bold border border-white/15">---</code>
+                </div>
+              </div>
+
+              <!-- Motivos e Orientações Técnicas -->
+              <div class="p-6 md:p-8 space-y-6">
+                <div class="p-5 rounded-2xl bg-red-50 border border-red-100">
+                  <p id="error-desc" class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                    O código informado <strong id="error-code-highlight" class="text-red-700 font-mono font-bold">---</strong> não consta na base pública digital de certificados do <strong>Centro de Capacitação Profissional (CCP)</strong> ou ainda não concluiu todas as etapas regimentais de homologação eletrônica.
                   </p>
-                  <div class="mt-4 flex flex-wrap gap-3">
-                    <button type="button" class="px-4 py-2 bg-primary text-on-primary rounded-xl text-xs font-semibold shadow hover:bg-gov-dark transition-all" onclick="limparBusca()">
-                      Tentar Outro Código
-                    </button>
-                    <a href="#atendimento-duvidas" class="px-4 py-2 bg-white text-primary border border-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-50 transition-all flex items-center gap-1.5">
-                      <span class="material-symbols-outlined text-[16px]">contact_support</span>
-                      Solicitar Atendimento ao Aluno
-                    </a>
+                </div>
+
+                <div>
+                  <h3 class="text-sm sm:text-base text-primary font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px] text-civic-gold">help</span>
+                    Por que isso pode ter ocorrido?
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 1. Erro de Digitação -->
+                    <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60 flex flex-col gap-2">
+                      <div class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm">
+                        <span class="material-symbols-outlined text-secondary text-[20px]">spellcheck</span>
+                        Erro de Digitação
+                      </div>
+                      <p class="text-xs text-slate-600 leading-relaxed">
+                        Confira caracteres maiúsculos, números e os hífens separadores exatamente como impressos no rodapé da folha ou verso do certificado.
+                      </p>
+                    </div>
+
+                    <!-- 2. Emissão até 2026 / Regularização Digital -->
+                    <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60 flex flex-col gap-2">
+                      <div class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm">
+                        <span class="material-symbols-outlined text-secondary text-[20px]">history_edu</span>
+                        Emissão até 2026
+                      </div>
+                      <p class="text-xs text-slate-600 leading-relaxed">
+                        Certificados emitidos até o primeiro semestre de 2026 estão registrados nos livros físicos cartorários do CCP. O aluno precisa comparecer à sede para regularização digital.
+                      </p>
+                    </div>
+
+                    <!-- 3. Homologação Recente -->
+                    <div class="p-4 rounded-xl bg-surface-pearl border border-slate-200/60 flex flex-col gap-2">
+                      <div class="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm">
+                        <span class="material-symbols-outlined text-secondary text-[20px]">pending_actions</span>
+                        Homologação Recente
+                      </div>
+                      <p class="text-xs text-slate-600 leading-relaxed">
+                        Cursos finalizados nos últimos 30 dias podem estar em tramitação de assinatura e chancela digital na SDETR.
+                      </p>
+                    </div>
                   </div>
+                </div>
+
+                <!-- Barra de Ações Rápidas -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                  <div class="flex items-center gap-2 text-slate-500 text-xs">
+                    <span class="material-symbols-outlined text-[18px]">info</span>
+                    <span>Deseja efetuar uma nova pesquisa ou solicitar verificação manual?</span>
+                  </div>
+                  <div class="flex items-center gap-3 flex-wrap">
+                    <button type="button" class="px-4 py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-variant text-primary text-xs font-semibold flex items-center gap-2 transition-colors border border-slate-200" onclick="limparBusca()">
+                      <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                      <span>Tentar Outro Código</span>
+                    </button>
+                    <button type="button" onclick="abrirFormularioManual()" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-gov-dark text-on-primary text-xs font-semibold flex items-center gap-2 shadow hover:shadow-md transition-all active:scale-95">
+                      <span class="material-symbols-outlined text-[18px]">assignment_add</span>
+                      <span>Solicitar Verificação Manual ou 2ª Via</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- FORMULÁRIO: SOLICITAÇÃO DE VERIFICAÇÃO MANUAL OU 2ª VIA -->
+            <div id="solicitacao-formulario" class="hidden bg-surface-container-lowest rounded-2xl shadow-xl border border-slate-200/90 overflow-hidden">
+              <div class="bg-gov-dark text-on-primary px-6 md:px-8 py-5 flex items-center justify-between gap-4 border-b border-emerald-950">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary-fixed shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">assignment</span>
+                  </div>
+                  <div>
+                    <h2 class="text-base sm:text-lg text-white font-bold">Solicitação de Verificação Manual ou 2ª Via</h2>
+                    <p class="text-xs text-primary-fixed-dim">Protocolo Digital SDETR • Busca em Acervo Cartorário</p>
+                  </div>
+                </div>
+                <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 text-primary-fixed text-xs font-semibold">
+                  <span class="material-symbols-outlined text-[15px]">verified</span>
+                  <span>Atendimento Gratuito</span>
+                </div>
+              </div>
+
+              <div class="p-6 md:p-8 space-y-6">
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                  Preencha os dados abaixo com o máximo de informações possíveis. Nossa equipe pedagógica e de arquivo da SDETR realizará a busca física nos livros oficiais do CCP para validar ou emitir a 2ª via digital.
+                </p>
+
+                <!-- Aviso de Prazo -->
+                <div class="p-4 rounded-xl bg-surface-container-low border border-slate-200 flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary text-[22px] shrink-0 mt-0.5">schedule</span>
+                  <div class="text-xs text-slate-600 leading-relaxed">
+                    <strong class="text-primary font-semibold">Prazo oficial de análise: até 3 (três) dias úteis.</strong>
+                    A notificação com o parecer técnico e link de validação do certificado será encaminhada diretamente para o seu e-mail e WhatsApp cadastrados.
+                  </div>
+                </div>
+
+                <!-- Formulário do Cidadão -->
+                <form id="form-verificacao-manual" class="space-y-5" onsubmit="event.preventDefault(); submeterVerificacaoManual();">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    
+                    <!-- Nome Completo -->
+                    <div class="md:col-span-2">
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Nome Completo do Aluno / Formando <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">person</span>
+                        </div>
+                        <input id="manual-form-nome" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="Digite o nome completo conforme documento civil" required type="text">
+                      </div>
+                    </div>
+
+                    <!-- CPF -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        CPF do Formando <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">badge</span>
+                        </div>
+                        <input id="manual-form-cpf" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="000.000.000-00" required type="text">
+                      </div>
+                    </div>
+
+                    <!-- Curso Realizado -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Curso de Qualificação Realizado <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">school</span>
+                        </div>
+                        <input id="manual-form-curso" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all font-medium" placeholder="Digite o nome do curso (ex: Bartender, Eletricista...)" required type="text">
+                      </div>
+                    </div>
+
+                    <!-- E-mail -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        E-mail para Recebimento do Parecer <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">mail</span>
+                        </div>
+                        <input id="manual-form-email" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="seuemail@exemplo.com" required type="email">
+                      </div>
+                    </div>
+
+                    <!-- Telefone / WhatsApp -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Telefone / WhatsApp <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">call</span>
+                        </div>
+                        <input id="manual-form-tel" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="(22) 99999-9999" required type="tel">
+                      </div>
+                    </div>
+
+                    <!-- Ano de Conclusão / Turma -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Ano de Conclusão ou Turma
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        </div>
+                        <input id="manual-form-ano" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="Ex: 2026 ou Turma 01" type="text">
+                      </div>
+                    </div>
+
+                    <!-- Código Impresso no Documento Físico -->
+                    <div>
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Código Impresso no Documento Físico (se houver)
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]">tag</span>
+                        </div>
+                        <input id="manual-form-codigo" class="w-full pl-10 pr-4 py-3 bg-surface-pearl rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all uppercase font-mono font-bold" placeholder="Ex: CCP-2026-0000" type="text">
+                      </div>
+                    </div>
+
+                    <!-- Upload de Cópia / Foto -->
+                    <div class="md:col-span-2">
+                      <label class="text-xs text-slate-700 font-semibold block mb-1.5">
+                        Anexar Cópia/Foto do Documento Físico ou Comprovante (Opcional)
+                      </label>
+                      <div class="border-2 border-dashed border-slate-300 rounded-xl p-5 bg-surface-pearl text-center hover:bg-slate-100 transition-colors cursor-pointer relative">
+                        <input type="file" id="manual-form-file" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*,.pdf" onchange="document.getElementById('file-upload-label').textContent = this.files[0] ? this.files[0].name : 'Clique para selecionar ou arraste o arquivo aqui';">
+                        <div class="flex flex-col items-center justify-center gap-1.5 pointer-events-none">
+                          <span class="material-symbols-outlined text-primary text-[32px]">upload_file</span>
+                          <div id="file-upload-label" class="text-xs sm:text-sm text-primary font-semibold">
+                            Clique para selecionar ou arraste o arquivo aqui
+                          </div>
+                          <p class="text-[11px] text-slate-500">
+                            Formatos: PDF, JPG, PNG até 10MB (foto legível do certificado, declaração ou termo de conclusão).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Ações de Envio -->
+                  <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-slate-500 text-xs">
+                      <span class="material-symbols-outlined text-[18px] text-emerald-700">lock</span>
+                      <span>Dados protegidos pela LGPD (Lei Federal nº 13.709/2018).</span>
+                    </div>
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                      <button type="button" onclick="document.getElementById('solicitacao-formulario').classList.add('hidden')" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition">
+                        Cancelar
+                      </button>
+                      <button type="submit" id="btn-submit-manual" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-primary hover:bg-gov-dark text-on-primary text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                        <span>Enviar Solicitação de Verificação</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Modal de Confirmação do Protocolo -->
+            <div id="protocolo-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-surface-container-lowest max-w-md w-full rounded-2xl p-6 shadow-2xl border border-slate-200 space-y-4">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
+                  <span class="material-symbols-outlined text-[32px] material-symbols-fill text-emerald-700">check_circle</span>
+                </div>
+                <div class="text-center">
+                  <h3 class="text-lg text-primary font-bold">Solicitação Registrada com Sucesso!</h3>
+                  <p class="text-xs text-slate-600 mt-1.5">
+                    Seu protocolo oficial de análise cartorária foi gerado sob o número:
+                  </p>
+                  <div id="protocolo-numero" class="my-3.5 p-3 bg-surface-pearl rounded-xl border border-slate-200 font-mono font-bold text-primary text-lg tracking-wider">
+                    PROT-2026-0842
+                  </div>
+                  <p class="text-xs text-slate-500 leading-relaxed">
+                    Nossa equipe de arquivo e regulamentação entrará em contato via e-mail e WhatsApp no prazo de até 3 dias úteis com o parecer da verificação.
+                  </p>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <button type="button" class="w-full py-3 bg-primary hover:bg-gov-dark text-on-primary rounded-xl text-xs sm:text-sm font-semibold transition shadow" onclick="fecharModalProtocolo()">
+                    Concluir
+                  </button>
+                  <button type="button" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2" onclick="abrirZapComProtocolo()">
+                    <span class="material-symbols-outlined text-[16px]">chat</span>
+                    <span>Avisar equipe via WhatsApp (Opcional)</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -494,6 +761,118 @@
 
           </section>
 
+          <!-- Seção Didática: Como Localizar o Código no Documento -->
+          <section id="section-como-localizar" class="w-full max-w-5xl mx-auto mt-12">
+            <div class="bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 p-6 sm:p-8">
+              <div class="flex flex-col lg:flex-row gap-8 items-center">
+                <!-- Coluna de Instruções Didáticas -->
+                <div class="flex-1 space-y-5">
+                  <div>
+                    <h2 class="text-xl sm:text-2xl text-on-surface font-bold mt-1">
+                      Como localizar o código de validação no documento
+                    </h2>
+                    <p class="text-xs sm:text-sm text-on-surface-variant mt-2 leading-relaxed">
+                      Se você recebeu uma cópia impressa ou arquivo PDF, siga os marcadores abaixo para conferir a chave de registro oficial:
+                    </p>
+                  </div>
+
+                  <div class="space-y-3.5">
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-xl bg-surface-container-low border border-slate-100">
+                      <div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">
+                        1
+                      </div>
+                      <div>
+                        <p class="text-xs sm:text-sm text-on-surface font-semibold">Código de Registro no Rodapé</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
+                          Localizado no canto inferior direito do anverso (frente) ou no carimbo do verso, no formato padrão <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-mono text-primary font-semibold">CCP-AAAA-XXXX</code>.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-xl bg-surface-container-low border border-slate-100">
+                      <div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">
+                        2
+                      </div>
+                      <div>
+                        <p class="text-xs sm:text-sm text-on-surface font-semibold">QR Code de Checagem Rápida</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
+                          Posicionado no canto do documento. Aponte a câmera do seu celular para ser direcionado automaticamente ao espelho oficial sem digitar nada.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-xl bg-surface-container-low border border-slate-100">
+                      <div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">
+                        3
+                      </div>
+                      <div>
+                        <p class="text-xs sm:text-sm text-on-surface font-semibold">Chave Homologada desde 2024</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
+                          Todos os títulos expedidos a partir de 2024 contam com assinatura digital arquivada em livro administrativo da SDETR.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Coluna Esquemática: Simulação do Certificado -->
+                <div class="w-full lg:w-96 flex flex-col items-center">
+                  <div class="w-full aspect-[4/3] bg-surface-pearl rounded-2xl border border-slate-200/90 shadow-sm p-4 relative flex flex-col justify-between overflow-hidden">
+                    <!-- Brasão / Topo Simulado -->
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/40">
+                      <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+                          <span class="material-symbols-outlined text-sm text-white">account_balance</span>
+                        </div>
+                        <div>
+                          <div class="w-24 h-2 bg-slate-300 rounded"></div>
+                          <div class="w-16 h-1.5 bg-slate-200 rounded mt-1"></div>
+                        </div>
+                      </div>
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-900 uppercase tracking-tight">Oficial</span>
+                    </div>
+
+                    <!-- Corpo Textual Simulado -->
+                    <div class="my-auto py-2 space-y-2">
+                      <div class="w-2/3 h-2.5 bg-emerald-900/30 rounded mx-auto"></div>
+                      <div class="w-full h-1.5 bg-slate-200 rounded"></div>
+                      <div class="w-5/6 h-1.5 bg-slate-200 rounded"></div>
+                      <div class="w-3/4 h-1.5 bg-slate-200 rounded"></div>
+                    </div>
+
+                    <!-- Rodapé e Indicadores de Código -->
+                    <div class="pt-2 flex items-end justify-between border-t border-slate-200/40">
+                      <!-- Selo Cívico Simulado -->
+                      <div class="flex items-center gap-1 text-[11px] text-civic-gold font-bold">
+                        <span class="material-symbols-outlined text-sm material-symbols-fill">verified</span>
+                        <span>SDETR</span>
+                      </div>
+
+                      <!-- Destaque do Código com Pulsador -->
+                      <div class="relative bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                        <span class="font-mono text-[11px] font-bold text-primary">CCP-2026-0000</span>
+                        <!-- Badge apontador -->
+                        <div class="absolute -top-6 right-0 bg-primary text-on-primary text-[9px] font-bold px-1.5 py-0.5 rounded shadow whitespace-nowrap">
+                          CÓDIGO AQUI
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- QR code fictício no canto -->
+                    <div class="absolute bottom-11 right-4 w-8 h-8 bg-slate-200/80 rounded flex items-center justify-center border border-slate-300">
+                      <span class="material-symbols-outlined text-base text-slate-600">qr_code_2</span>
+                    </div>
+                  </div>
+
+                  <span class="text-xs text-slate-400 mt-2 text-center">
+                    Representação esquemática do layout padrão CCP
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- Pilares de Confiança e Fé Pública (3 Colunas) -->
           <section id="trust-pillars" class="max-w-5xl mx-auto w-full mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200/80">
@@ -529,36 +908,44 @@
 
           <!-- Canal de Suporte e Dúvidas -->
           <section id="atendimento-duvidas" class="max-w-4xl mx-auto w-full mt-12 bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-md">
-                  <span class="material-symbols-outlined text-[26px]">support_agent</span>
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-md">
+                <span class="material-symbols-outlined text-[26px]">support_agent</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-base sm:text-lg text-primary font-bold">Precisa de auxílio com uma certificação?</h3>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                  Se você possui um certificado anterior ao ano vigente ou caso haja divergência nos caracteres alfanuméricos, procure nossa equipe de apoio educacional e regulatório.
+                </p>
+
+                <!-- Informações de Contato Alinhadas Horizontalmente -->
+                <div class="mt-4 pt-4 border-t border-slate-200/70 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-600">
+                  <span class="flex items-center gap-1.5 font-medium text-slate-800">
+                    <span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                    ccp@iguaba.rj.gov.br
+                  </span>
+                  <span class="flex items-center gap-1.5 font-medium text-slate-800">
+                    <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+                    Rua Nilo Lopes Pessoa, nº 126, Centro • Iguaba Grande/RJ
+                  </span>
+                  <span class="flex items-center gap-1.5 font-medium text-slate-800">
+                    <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                    Segunda a Sexta, 08h às 17h
+                  </span>
                 </div>
-                <div>
-                  <h3 class="text-base sm:text-lg text-primary font-bold">Precisa de auxílio com uma certificação?</h3>
-                  <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl leading-relaxed">
-                    Se você possui um certificado anterior ao ano vigente ou caso haja divergência nos caracteres alfanuméricos, procure nossa equipe de apoio educacional e regulatório.
-                  </p>
-                  <div class="mt-4 flex flex-wrap gap-4 text-xs text-slate-600">
-                    <span class="flex items-center gap-1.5 font-medium text-slate-800">
-                      <span class="material-symbols-outlined text-[16px] text-primary">mail</span>
-                      ccp@iguaba.rj.gov.br
-                    </span>
-                    <span class="flex items-center gap-1.5 font-medium text-slate-800">
-                      <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
-                      Rua Nilo Lopes Pessoa, nº 126, Centro • Iguaba Grande/RJ
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
-                      08h às 17h (dias úteis)
-                    </span>
-                  </div>
+
+                <!-- Botões de Ação Abaixo -->
+                <div class="mt-5 pt-4 border-t border-slate-200/70 flex flex-wrap items-center gap-3">
+                  <a href="mailto:ccp@iguaba.rj.gov.br?subject=Duvida%20de%20Autenticidade%20de%20Certificado" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-primary text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all flex items-center gap-2 border border-slate-200">
+                    <span class="material-symbols-outlined text-[18px]">mail</span>
+                    <span>Enviar E-mail para CCP</span>
+                  </a>
+                  <a href="https://wa.me/5522981319688?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20a%20valida%C3%A7%C3%A3o%20de%20certificado%20do%20CCP." target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all flex items-center gap-2 active:scale-95">
+                    <span class="material-symbols-outlined text-[18px]">chat</span>
+                    <span>Conversar via WhatsApp</span>
+                  </a>
                 </div>
               </div>
-              <a href="mailto:ccp@iguaba.rj.gov.br?subject=Duvida%20de%20Autenticidade%20de%20Certificado" class="px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-primary text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all shrink-0 flex items-center gap-2 border border-slate-200">
-                <span>Falar com o CCP</span>
-                <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-              </a>
             </div>
           </section>
 
@@ -630,6 +1017,7 @@
       statusInitial.classList.add('hidden');
       statusSuccess.classList.add('hidden');
       statusError.classList.add('hidden');
+      document.getElementById('solicitacao-formulario').classList.add('hidden');
       statusLoading.classList.remove('hidden');
 
       // Atualiza URL sem recarregar a página
@@ -654,18 +1042,20 @@
           console.error("Erro retornado pelo Supabase:", error);
           errorTitle.textContent = "Falha na Consulta";
           errorBadge.textContent = "Erro Servidor";
-          errorCodeLabel.textContent = `"${codigoLimpo}"`;
-          errorDesc.textContent = `Ocorreu um erro ao consultar os servidores: ${error.message || 'Erro de conexão'}.`;
+          document.getElementById('error-code-badge').textContent = codigoLimpo;
+          document.getElementById('error-code-highlight').textContent = codigoLimpo;
+          errorDesc.innerHTML = `Ocorreu um erro ao consultar os servidores: ${error.message || 'Erro de conexão'}.`;
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
         }
 
         if (!data) {
-          errorTitle.textContent = "Certificado Não Localizado";
-          errorBadge.textContent = "Código Inexistente";
-          errorCodeLabel.textContent = `"${codigoLimpo}"`;
-          errorDesc.textContent = `Não encontramos nenhum certificado emitido com o código "${codigoLimpo}" na base de dados oficial da SDETR.`;
+          errorTitle.textContent = "Registro Não Localizado no Sistema Oficial";
+          errorBadge.textContent = "Não Encontrado";
+          document.getElementById('error-code-badge').textContent = codigoLimpo;
+          document.getElementById('error-code-highlight').textContent = codigoLimpo;
+          errorDesc.innerHTML = `O código informado <strong class="text-red-700 font-mono font-bold">${codigoLimpo}</strong> não consta na base pública digital de certificados do <strong>Centro de Capacitação Profissional (CCP)</strong> ou ainda não concluiu todas as etapas regimentais de homologação eletrônica.`;
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
@@ -675,8 +1065,9 @@
         if (data.status === 'revogado') {
           errorTitle.textContent = "Certificado Revogado";
           errorBadge.textContent = "Cancelado";
-          errorCodeLabel.textContent = `"${codigoLimpo}"`;
-          errorDesc.textContent = "Este certificado foi formalmente revogado ou cancelado administrativamente pela coordenação do CCP.";
+          document.getElementById('error-code-badge').textContent = codigoLimpo;
+          document.getElementById('error-code-highlight').textContent = codigoLimpo;
+          errorDesc.innerHTML = `O certificado correspondente ao código <strong class="text-red-700 font-mono font-bold">${codigoLimpo}</strong> foi formalmente cancelado ou anulado administrativamente pela coordenação do CCP.`;
           statusError.classList.remove('hidden');
           statusError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           return;
@@ -730,7 +1121,93 @@
       const input = document.getElementById('cert-input');
       input.value = '';
       input.focus();
+      document.getElementById('solicitacao-formulario').classList.add('hidden');
       validarDocumento('');
+    }
+
+    function abrirFormularioManual() {
+      const formBox = document.getElementById('solicitacao-formulario');
+      formBox.classList.remove('hidden');
+      const codeVal = document.getElementById('cert-input').value;
+      if (codeVal) {
+        document.getElementById('manual-form-codigo').value = codeVal.trim().toUpperCase();
+      }
+      formBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function submeterVerificacaoManual() {
+      const btn = document.getElementById('btn-submit-manual');
+      const nome = (document.getElementById('manual-form-nome').value || '').trim();
+      const cpf = (document.getElementById('manual-form-cpf').value || '').trim();
+      const curso = (document.getElementById('manual-form-curso').value || '').trim();
+      const email = (document.getElementById('manual-form-email').value || '').trim();
+      const tel = (document.getElementById('manual-form-tel').value || '').trim();
+      const anoTurma = (document.getElementById('manual-form-ano').value || '').trim();
+      const codDoc = (document.getElementById('manual-form-codigo').value || '').trim().toUpperCase();
+      const fileInput = document.getElementById('manual-form-file');
+      const arquivoNome = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : null;
+
+      if (!nome || !cpf || !curso || !email || !tel) {
+        alert('Por favor, preencha todos os campos obrigatórios (*).');
+        return;
+      }
+
+      // Gera protocolo único
+      const anoAtual = new Date().getFullYear();
+      const randNum = String(Math.floor(1000 + Math.random() * 9000));
+      const prot = `PROT-${anoAtual}-${randNum}`;
+
+      const originalBtnHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">sync</span><span>Gravando no Supabase...</span>`;
+
+      try {
+        const { error } = await supa.from('solicitacoes_certificados').insert([{
+          protocolo: prot,
+          nome_aluno: nome,
+          cpf: cpf,
+          curso: curso,
+          email: email,
+          telefone: tel,
+          ano_turma: anoTurma || null,
+          codigo_documento: codDoc || null,
+          arquivo_nome: arquivoNome,
+          status: 'pendente'
+        }]);
+
+        if (error) {
+          console.error("Erro ao salvar no Supabase:", error);
+          alert(`Falha ao registrar solicitação no banco de dados: ${error.message || 'Erro'}.\n\nCertifique-se de que a tabela 'solicitacoes_certificados' foi criada no Supabase executando o script SQL fornecido.`);
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+          return;
+        }
+
+        // Exibe protocolo e abre modal
+        document.getElementById('protocolo-numero').textContent = prot;
+        document.getElementById('protocolo-modal').classList.remove('hidden');
+
+      } catch (err) {
+        console.error("Erro geral na gravação:", err);
+        alert(`Erro de conexão ao gravar no banco: ${err.message || 'Verifique sua conexão'}.`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+      }
+    }
+
+    function fecharModalProtocolo() {
+      document.getElementById('protocolo-modal').classList.add('hidden');
+      document.getElementById('solicitacao-formulario').classList.add('hidden');
+      document.getElementById('form-verificacao-manual').reset();
+    }
+
+    function abrirZapComProtocolo() {
+      const prot = document.getElementById('protocolo-numero').textContent;
+      const nome = (document.getElementById('manual-form-nome').value || '').trim();
+      const curso = (document.getElementById('manual-form-curso').value || '').trim();
+      const msg = encodeURIComponent(`Olá! Acabei de registrar uma solicitação de verificação manual / 2ª via pelo portal oficial.\n\n*Protocolo:* ${prot}\n*Aluno:* ${nome}\n*Curso:* ${curso}`);
+      window.open(`https://wa.me/5522981319688?text=${msg}`, '_blank');
     }
 
     function setSampleCode(code) {
