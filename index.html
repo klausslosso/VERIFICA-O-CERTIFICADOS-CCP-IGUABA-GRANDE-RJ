@@ -1104,7 +1104,7 @@
         document.getElementById('res-ano').textContent = anoLetivo;
 
         statusSuccess.classList.remove('hidden');
-        statusSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        statusSuccess.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       } catch (err) {
         console.error("Erro geral na validação:", err);
@@ -1276,18 +1276,12 @@
         { facingMode: "environment" },
         config,
         (decodedText) => {
-          // Extrai parâmetro de código se for uma URL completa
-          let codEncontrado = decodedText;
-          try {
-            if (decodedText.includes('?')) {
-              const url = new URL(decodedText);
-              codEncontrado = url.searchParams.get('codigo') || url.searchParams.get('cod') || url.searchParams.get('id') || decodedText;
-            }
-          } catch(e) {}
-
           pararScanner();
           document.getElementById('qr-camera-drawer').classList.add('hidden');
-          validarDocumento(codEncontrado);
+          const codEncontrado = extrairCodigoDeTexto(decodedText);
+          if (codEncontrado) {
+            validarDocumento(codEncontrado);
+          }
         },
         (error) => {
           // Erro de leitura por frame, não precisa interromper
@@ -1310,7 +1304,93 @@
       validarDocumento(code);
     }
 
-    // Executa ao carregar a página (lê parâmetros de URL do QR Code)
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const codigoPara
+    // Extrator Universal de Código de Certificado (URL, Query String, Hash ou Código Direto)
+    function extrairCodigoDeTexto(entrada) {
+      if (!entrada) return '';
+      let str = String(entrada).trim();
+
+      // 1. Se vier com query string (?...)
+      if (str.includes('?')) {
+        try {
+          const urlObj = new URL(str.startsWith('http') ? str : ('https://exemplo.com/' + str.replace(/^\/+/, '')));
+          for (const [key, val] of urlObj.searchParams.entries()) {
+            const k = key.toLowerCase();
+            if (['codigo', 'cod', 'id', 'c', 'code', 'cert', 'q', 'valida', 'validar', 'hash'].includes(k)) {
+              if (val && val.trim()) return val.trim().replace(/\/+$/, '');
+            }
+          }
+        } catch (e) {
+          const match = str.match(/[?&](?:codigo|cod|id|c|code|cert|q|valida)=([^&#]+)/i);
+          if (match && match[1]) return decodeURIComponent(match[1]).trim().replace(/\/+$/, '');
+        }
+      }
+
+      // 2. Se vier com hash (#...)
+      if (str.includes('#')) {
+        const hashPart = str.split('#')[1] || '';
+        const matchHash = hashPart.match(/(?:codigo|cod|id|c|code|cert)=([^&]+)/i);
+        if (matchHash && matchHash[1]) return decodeURIComponent(matchHash[1]).trim().replace(/\/+$/, '');
+        if (/^[a-zA-Z0-9\-_./]+$/.test(hashPart) && !hashPart.includes('/')) {
+          return hashPart.trim();
+        }
+      }
+
+      // 3. Se for uma URL sem query string terminada no código
+      if (str.startsWith('http://') || str.startsWith('https://')) {
+        const limpo = str.split('?')[0].split('#')[0].replace(/\/+$/, '');
+        const partes = limpo.split('/');
+        const ultima = partes[partes.length - 1];
+        if (ultima && !ultima.includes('.') && /^[a-zA-Z0-9\-_]+$/.test(ultima) && ultima.length >= 4 && !['verificacao', 'certificados', 'index', 'index.html'].includes(ultima.toLowerCase())) {
+          return ultima;
+        }
+      }
+
+      // 4. Caso seja o próprio código direto
+      return str.replace(/\/+$/, '');
+    }
+
+    // Identifica e dispara a consulta automática ao carregar a página
+    function dispararBuscaInicial() {
+      let cod = '';
+
+      // Tenta query params (?codigo=...)
+      if (window.location.search) {
+        cod = extrairCodigoDeTexto(window.location.search);
+      }
+      // Tenta hash (#codigo=...)
+      if (!cod && window.location.hash) {
+        cod = extrairCodigoDeTexto(window.location.hash);
+      }
+      // Tenta a URL completa se necessário
+      if (!cod) {
+        const extraido = extrairCodigoDeTexto(window.location.href);
+        if (extraido && !extraido.startsWith('http')) {
+          cod = extraido;
+        }
+      }
+
+      if (cod) {
+        validarDocumento(cod);
+      } else {
+        validarDocumento('');
+      }
+    }
+
+    // Execução imediata se o DOM já foi carregado, ou ouvinte caso esteja carregando
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', dispararBuscaInicial);
+    } else {
+      dispararBuscaInicial();
+    }
+
+    // Fallback garantido no load para navegadores mobile (Safari iOS / Chrome Android)
+    window.addEventListener('load', () => {
+      const input = document.getElementById('cert-input');
+      const statusInitial = document.getElementById('status-initial');
+      if (input && !input.value && statusInitial && !statusInitial.classList.contains('hidden')) {
+        dispararBuscaInicial();
+      }
+    });
+  </script>
+</body>
+</html>
