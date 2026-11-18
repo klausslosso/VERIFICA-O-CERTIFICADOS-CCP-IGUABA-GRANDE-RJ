@@ -226,10 +226,6 @@
 
               <!-- Exemplo de Formato e Dica -->
               <div class="mt-3.5 pt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-on-surface-variant border-t border-slate-100">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-slate-400">Exemplo de formato:</span>
-                  <span class="font-mono font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-xs">CCP-2026-0000</span>
-                </div>
                 <div class="flex items-center gap-1 text-slate-400">
                   <span class="material-symbols-outlined text-[15px]">info</span>
                   <span>Código disponível no verso e rodapé da via impressa.</span>
@@ -1030,16 +1026,8 @@
       window.history.pushState({ path: novaUrl }, '', novaUrl);
 
       try {
-        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(codigoLimpo);
-        
-        let query = supa.from('certificados').select('*');
-        if (isUUID) {
-          query = query.or(`codigo.ilike.${codigoLimpo},id.eq.${codigoLimpo}`);
-        } else {
-          query = query.ilike('codigo', codigoLimpo);
-        }
-
-        const { data, error } = await query.maybeSingle();
+        const { data, error } = await supa.rpc('validar_certificado_por_codigo', { p_busca: codigoLimpo });
+        const cert = Array.isArray(data) ? data[0] : data;
 
         statusLoading.classList.add('hidden');
 
@@ -1054,7 +1042,7 @@
           return;
         }
 
-        if (!data) {
+        if (!cert) {
           errorTitle.textContent = "Registro Não Localizado no Sistema Oficial";
           errorBadge.textContent = "Não Encontrado";
           document.getElementById('error-code-badge').textContent = codigoLimpo;
@@ -1069,7 +1057,7 @@
         }
 
         // Verifica se o certificado foi revogado
-        if (data.status === 'revogado') {
+        if (cert.status === 'revogado') {
           errorTitle.textContent = "Certificado Revogado";
           errorBadge.textContent = "Cancelado";
           document.getElementById('error-code-badge').textContent = codigoLimpo;
@@ -1082,27 +1070,27 @@
         }
 
         // Preenche com sucesso os dados do formando
-        document.getElementById('res-aluno').textContent = data.nome_aluno || 'NÃO INFORMADO';
-        document.getElementById('res-curso').textContent = data.curso || 'CURSO LIVRE';
+        document.getElementById('res-aluno').textContent = cert.nome_aluno || 'NÃO INFORMADO';
+        document.getElementById('res-curso').textContent = cert.curso || 'CURSO LIVRE';
         
-        const cargaNum = data.carga_horaria || '--';
+        const cargaNum = cert.carga_horaria || '--';
         document.getElementById('res-carga').textContent = `${cargaNum} Horas`;
-        document.getElementById('res-carga-extenso').textContent = data.horas_extenso ? `(${data.horas_extenso})` : 'Aproveitamento Homologado';
+        document.getElementById('res-carga-extenso').textContent = cert.horas_extenso ? `(${cert.horas_extenso})` : 'Aproveitamento Homologado';
 
-        document.getElementById('res-periodo').textContent = data.periodo || data.data_conclusao || 'Concluído Regularmente';
-        document.getElementById('res-instrutor').textContent = data.instrutor || 'Coordenação Docente CCP';
+        document.getElementById('res-periodo').textContent = cert.periodo || cert.data_conclusao || 'Concluído Regularmente';
+        document.getElementById('res-instrutor').textContent = cert.instrutor || 'Coordenação Docente CCP';
         
-        const dataFormatada = formatarDataPorExtenso(data.data_conclusao || data.created_at);
+        const dataFormatada = formatarDataPorExtenso(cert.data_conclusao || cert.created_at);
         document.getElementById('res-emissao').textContent = dataFormatada;
         
-        document.getElementById('registered-code-display').textContent = data.codigo || codigoLimpo;
+        document.getElementById('registered-code-display').textContent = cert.codigo || codigoLimpo;
 
         // Ano de conclusão
         let anoLetivo = '2026';
-        if (data.periodo && data.periodo.match(/\b(202\d)\b/)) {
-          anoLetivo = data.periodo.match(/\b(202\d)\b/)[0];
-        } else if (data.data_conclusao && data.data_conclusao.match(/\b(202\d)\b/)) {
-          anoLetivo = data.data_conclusao.match(/\b(202\d)\b/)[0];
+        if (cert.periodo && cert.periodo.match(/\b(202\d)\b/)) {
+          anoLetivo = cert.periodo.match(/\b(202\d)\b/)[0];
+        } else if (cert.data_conclusao && cert.data_conclusao.match(/\b(202\d)\b/)) {
+          anoLetivo = cert.data_conclusao.match(/\b(202\d)\b/)[0];
         }
         document.getElementById('res-ano').textContent = anoLetivo;
 
